@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mentee Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f8;
+    }
+
+    nav {
+      background: #1e3a8a;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    h2 {
+      color: #1e3a8a;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+    }
+    
+    .card {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.card:nth-child(2) { animation-delay: 0.1s; }
+.card:nth-child(3) { animation-delay: 0.2s; }
+.card:nth-child(4) { animation-delay: 0.3s; }
+.card:nth-child(5) { animation-delay: 0.4s; }
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    .actions a {
+      display: inline-block;
+      margin: 10px 15px 0 0;
+      padding: 10px 16px;
+      background: #1e3a8a;
+      color: white;
+      border-radius: 6px;
+      text-decoration: none;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    footer {
+      background: #1e3a8a;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+ <nav>
+  <div><b>Youth Mentorship Hub</b></div>
+  <div>
+    <a href="index.html">Home</a>
+    <a href="contact.html">Contact</a>
+    <a href="messages.html">Messages</a>
+    <a href="login.html" style="color:#ffcccb;">Logout</a>
+  </div>
+</nav>
+
+  <div class="container">
+    <h2>Welcome, <span id="menteeName">Mentee</span> 👋</h2>
+
+    <div class="card">
+      <h3>Your Mentor Match</h3>
+      <p>You haven’t been paired with a mentor yet. You can explore mentors and send connection requests.</p>
+      <div class="actions">
+        <a href="requests.html">Browse Mentors</a>
+        <a href="mentee-profile.html">Update Interests</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Resources</h3>
+      <ul>
+        <li>📘 <a href="#">5 Ways to Make the Most of a Mentor</a></li>
+        <li>🎧 <a href="#">Podcast: Building Confidence in Your Field</a></li>
+        <li>📺 <a href="#">Video: Career Planning for Young Professionals</a></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Suggested Resource</h3>
+      <p><strong>Article:</strong> <a href="#">How to Set Meaningful Learning Goals</a></p>
+      <p>Short read on defining measurable goals with your mentor. 5-min read.</p>
+    </div>
+
+    <div class="card">
+      <h3>Announcements</h3>
+      <ul>
+        <li>🎉 August Mentorship Workshop – register now!</li>
+        <li>📢 New mentors added in Creative & Tech fields!</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    © 2025 Youth Mentorship Hub. All rights reserved.
+  </footer>
+
+  <script>
+    const name = localStorage.getItem('userName') || 'Mentee';
+    document.getElementById('menteeName').textContent = name;
+  </script>
+</body>
+</html>

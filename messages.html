@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Mentorship Messages</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f7f9fc;
+  }
+  header {
+    background: #007bff;
+    color: white;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+  nav a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    position: relative;
+  }
+  nav a:hover {
+    text-decoration: underline;
+  }
+  .nav-indicator {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    background: red;
+    color: white;
+    font-size: 0.65rem;
+    padding: 4px 6px;
+    border-radius: 50%;
+    display: none;
+  }
+  .container {
+    display: flex;
+    height: calc(100vh - 56px);
+  }
+  #contactList {
+    width: 28%;
+    padding: 1rem;
+    border-right: 2px solid #e0e0e0;
+    background: white;
+    overflow-y: auto;
+  }
+  #chatArea {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    background: white;
+  }
+  .contact {
+    position: relative;
+    padding: 12px;
+    margin-bottom: 10px;
+    background: #f0f4ff;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .contact:hover {
+    background: #d6e2ff;
+  }
+  .badge {
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    background: red;
+    color: white;
+    font-size: 0.75rem;
+    padding: 3px 7px;
+    border-radius: 15px;
+  }
+  #chatTitle {
+    font-weight: 700;
+    margin: 0 0 10px;
+  }
+  #chatBox {
+    flex-grow: 1;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px;
+    overflow-y: auto;
+    background: #fafafa;
+    font-size: 0.95rem;
+  }
+  .message {
+    margin: 8px 0;
+    max-width: 70%;
+    padding: 8px 12px;
+    border-radius: 14px;
+    position: relative;
+    line-height: 1.3;
+  }
+  .sent {
+    background: #007bff;
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 0;
+  }
+  .received {
+    background: #e4e6eb;
+    color: #222;
+    margin-right: auto;
+    border-bottom-left-radius: 0;
+  }
+  .timestamp {
+    display: block;
+    font-size: 0.7rem;
+    color: #666;
+    margin-top: 3px;
+    text-align: right;
+  }
+  #chatForm {
+    margin-top: 12px;
+    display: flex;
+  }
+  #messageInput {
+    flex-grow: 1;
+    padding: 10px 14px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+  }
+  #messageInput:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+  button {
+    margin-left: 10px;
+    background: #007bff;
+    border: none;
+    color: white;
+    padding: 10px 18px;
+    font-weight: 600;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  button:hover {
+    background: #0056b3;
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      flex-direction: column;
+      height: auto;
+    }
+    #contactList {
+      width: 100%;
+      border-right: none;
+      border-bottom: 2px solid #e0e0e0;
+      max-height: 200px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    .contact {
+      display: inline-block;
+      margin-right: 10px;
+      margin-bottom: 0;
+      border-radius: 14px;
+      padding: 10px 16px;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      white-space: normal;
+      cursor: pointer;
+    }
+    #chatArea {
+      padding: 1rem 0.5rem 1rem 0.5rem;
+      height: calc(100vh - 260px);
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>MentorLink</h1>
+  <nav>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="#" id="messagesNav">Messages
+      <span class="nav-indicator" id="navAlertDot"></span>
+    </a>
+    <a href="profile.html">Profile</a>
+    <a href="login.html" onclick="logout()">Logout</a>
+  </nav>
+</header>
+
+<div class="container">
+  <div id="contactList"></div>
+  <div id="chatArea">
+    <h3 id="chatTitle">Select a contact</h3>
+    <div id="chatBox"></div>
+    <form id="chatForm">
+      <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off" required />
+      <button type="submit">Send</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  const role = localStorage.getItem('userRole') || 'mentee'; // or 'mentor'
+  const currentUser = localStorage.getItem('currentUser') || 'Divine';
+
+  // Example contacts depending on user role
+  const mentorContacts = [
+    { name: 'Coach Maya', intro: 'Hey Divine, excited to mentor you!' },
+    { name: 'Mr. Ayo', intro: 'Welcome aboard! Let’s grow together.' },
+    { name: 'Zee James', intro: 'Ready to explore your potential?' },
+    { name: 'Miss Clara', intro: 'You can reach out anytime.' },
+    { name: 'Dr. Ben', intro: 'Looking forward to guiding you.' }
+  ];
+
+  const menteeContacts = [
+    { name: 'Chisom', intro: 'Hi Mentor, eager to learn!' },
+    { name: 'Ibrahim', intro: 'Grateful to be here!' },
+    { name: 'Fatima', intro: 'Excited to connect and grow.' },
+    { name: 'David', intro: 'Thanks for this opportunity!' },
+    { name: 'Leah', intro: 'Looking forward to your guidance.' }
+  ];
+
+  const contacts = role === 'mentee' ? mentorContacts : menteeContacts;
+
+  const contactListEl = document.getElementById('contactList');
+  const chatBoxEl = document.getElementById('chatBox');
+  const chatTitleEl = document.getElementById('chatTitle');
+  const chatFormEl = document.getElementById('chatForm');
+  const messageInputEl = document.getElementById('messageInput');
+  const navAlertDot = document.getElementById('navAlertDot');
+
+  let selectedContact = null;
+  let messagesData = JSON.parse(localStorage.getItem('messagesData') || '{}');
+  let unreadCounts = JSON.parse(localStorage.getItem('unreadCounts') || '{}');
+
+  // Initialize unread counts to 0 for contacts missing count
+  contacts.forEach(c => {
+    if (!(c.name in unreadCounts)) unreadCounts[c.name] = 0;
+  });
+
+  function formatTimestamp(date) {
+    return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function saveMessages() {
+    localStorage.setItem('messagesData', JSON.stringify(messagesData));
+    localStorage.setItem('unreadCounts', JSON.stringify(unreadCounts));
+  }
+
+  function renderContacts() {
+    contactListEl.innerHTML = '';
+    contacts.forEach(contact => {
+      const contactDiv = document.createElement('div');
+      contactDiv.className = 'contact';
+      contactDiv.textContent = contact.name;
+
+      if (unreadCounts[contact.name] > 0) {
+        const badge = document.createElement('span');
+        badge.className = 'badge';
+        badge.textContent = unreadCounts[contact.name];
+        contactDiv.appendChild(badge);
+      }
+
+      contactDiv.addEventListener('click', () => {
+        openChat(contact.name);
+      });
+
+      contactListEl.appendChild(contactDiv);
+    });
+
+    updateNavNotification();
+  }
+
+  function updateNavNotification() {
+    const totalUnread = Object.values(unreadCounts).reduce((a, b) => a + b, 0);
+    if (totalUnread > 0) {
+      navAlertDot.style.display = 'inline-block';
+      navAlertDot.textContent = totalUnread > 9 ? '9+' : totalUnread;
+    } else {
+      navAlertDot.style.display = 'none';
+    }
+  }
+
+  function openChat(contactName) {
+    selectedContact = contactName;
+    chatTitleEl.textContent = contactName;
+
+    if (!messagesData[contactName]) {
+      // Preload intro message from contact
+      const introText = (contacts.find(c => c.name === contactName) || {}).intro || "Hello!";
+      messagesData[contactName] = [
+        { sender: contactName, text: introText, time: new Date().toISOString() }
+      ];
+    }
+
+    // Mark messages as read
+    unreadCounts[contactName] = 0;
+    saveMessages();
+    renderContacts();
+    updateNavNotification();
+
+    renderMessages();
+  }
+
+  function renderMessages() {
+    chatBoxEl.innerHTML = '';
+    if (!selectedContact) return;
+
+    const msgs = messagesData[selectedContact] || [];
+    msgs.forEach(msg => {
+      const msgDiv = document.createElement('div');
+      msgDiv.classList.add('message');
+      msgDiv.classList.add(msg.sender === currentUser ? 'sent' : 'received');
+      msgDiv.textContent = msg.text;
+
+      const timeSpan = document.createElement('span');
+      timeSpan.className = 'timestamp';
+      timeSpan.textContent = formatTimestamp(msg.time);
+      msgDiv.appendChild(timeSpan);
+
+      chatBoxEl.appendChild(msgDiv);
+    });
+
+    chatBoxEl.scrollTop = chatBoxEl.scrollHeight;
+  }
+
+  chatFormEl.addEventListener('submit', e => {
+    e.preventDefault();
+    if (!selectedContact) return;
+
+    const newMsg = {
+      sender: currentUser,
+      text: messageInputEl.value.trim(),
+      time: new Date().toISOString()
+    };
+    if (!messagesData[selectedContact]) messagesData[selectedContact] = [];
+    messagesData[selectedContact].push(newMsg);
+
+    // For demo, simulate reply from contact after 1.2s
+    setTimeout(() => {
+      const reply = {
+        sender: selectedContact,
+        text: "Thanks for your message! We'll reply as soon as we're back online!",
+        time: new Date().toISOString()
+      };
+      messagesData[selectedContact].push(reply);
+
+      if (selectedContact !== currentUser) {
+        unreadCounts[selectedContact] = (unreadCounts[selectedContact] || 0) + 1;
+        updateNavNotification();
+      }
+      saveMessages();
+      if (selectedContact === reply.sender) renderMessages();
+    }, 1200);
+
+    messageInputEl.value = '';
+    saveMessages();
+    renderMessages();
+  });
+
+  function logout() {
+    // Clear session or redirect logic here
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('userRole');
+  }
+
+  // Initial render
+  renderContacts();
+</script>
+
+</body>
+</html>

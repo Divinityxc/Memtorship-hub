@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Update Mentee Profile</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f7fc;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #007bff;
+      color: white;
+      padding: 15px 20px;
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.08);
+    }
+    h2 {
+      margin-bottom: 20px;
+      text-align: center;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-weight: 600;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    textarea {
+      resize: vertical;
+      height: 80px;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .profile-pic {
+      margin: 10px 0;
+      text-align: center;
+    }
+    .profile-pic img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<header>Update Profile</header>
+
+<div class="container">
+  <h2>Mentee Information</h2>
+  <form id="updateForm">
+
+    <label for="profilePic">Profile Picture</label>
+    <input type="file" id="profilePic" accept="image/*" />
+    <div class="profile-pic">
+      <img id="preview" src="" alt="Preview" style="display:none;">
+    </div>
+
+    <label for="name">Full Name</label>
+    <input type="text" id="name" placeholder="Divine Mentee" required />
+
+    <label for="email">Email</label>
+    <input type="email" id="email" placeholder="you@example.com" required />
+
+    <label for="phone">Phone Number</label>
+    <input type="tel" id="phone" placeholder="+234..." />
+
+    <label for="location">Location</label>
+    <input type="text" id="location" placeholder="City, Country" />
+
+    <label for="interest">Primary Interest</label>
+    <input type="text" id="interest" placeholder="e.g. Engineering, Design, Marketing" />
+
+    <label for="skills">Skills / Topics of Interest</label>
+    <select id="skills" multiple>
+      <option>Leadership</option>
+      <option>Time Management</option>
+      <option>Software Development</option>
+      <option>Public Speaking</option>
+      <option>Graphic Design</option>
+      <option>Marketing</option>
+      <option>Finance</option>
+    </select>
+
+    <label for="availability">Availability</label>
+    <select id="availability">
+      <option value="weekends">Weekends</option>
+      <option value="weekdays">Weekdays</option>
+      <option value="evenings">Evenings</option>
+      <option value="flexible">Flexible</option>
+    </select>
+
+    <label for="communication">Preferred Communication</label>
+    <select id="communication">
+      <option>Email</option>
+      <option>Phone</option>
+      <option>Video Call</option>
+      <option>Chat</option>
+    </select>
+
+    <label for="goals">Your Goals</label>
+    <textarea id="goals" placeholder="What do you hope to gain from this program?"></textarea>
+
+    <label for="bio">Short Bio</label>
+    <textarea id="bio" placeholder="Tell us about yourself..."></textarea>
+
+    <button type="submit">Save Changes</button>
+  </form>
+</div>
+<script>
+  const preview = document.getElementById("preview");
+  const profilePic = document.getElementById("profilePic");
+
+  profilePic.addEventListener("change", () => {
+    const file = profilePic.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        preview.src = reader.result;
+        preview.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  document.getElementById("updateForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const data = {
+      name: document.getElementById("name").value,
+      email: document.getElementById("email").value,
+      phone: document.getElementById("phone").value,
+      location: document.getElementById("location").value,
+      interest: document.getElementById("interest").value,
+      availability: document.getElementById("availability").value,
+      communication: document.getElementById("communication").value,
+      skills: Array.from(document.getElementById("skills").selectedOptions).map(o => o.value),
+      goals: document.getElementById("goals").value,
+      bio: document.getElementById("bio").value
+    };
+
+    localStorage.setItem("menteeProfile", JSON.stringify(data));
+    alert("Profile updated successfully!");
+  });
+  window.addEventListener("DOMContentLoaded", () => {
+    const saved = JSON.parse(localStorage.getItem("menteeProfile"));
+    if (saved) {
+      document.getElementById("name").value = saved.name || "";
+      document.getElementById("email").value = saved.email || "";
+      document.getElementById("phone").value = saved.phone || "";
+      document.getElementById("location").value = saved.location || "";
+      document.getElementById("interest").value = saved.interest || "";
+      document.getElementById("availability").value = saved.availability || "";
+      document.getElementById("communication").value = saved.communication || "";
+      document.getElementById("goals").value = saved.goals || "";
+      document.getElementById("bio").value = saved.bio || "";
+
+      const skillsSelect = document.getElementById("skills");
+      if (saved.skills && Array.isArray(saved.skills)) {
+        Array.from(skillsSelect.options).forEach(option => {
+          option.selected = saved.skills.includes(option.value);
+        });
+      }
+    }
+  });
+</script>
+</body>
+</html>

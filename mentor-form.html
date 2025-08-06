@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mentor Profile Setup - Youth Mentorship Hub</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+    }
+    .container {
+      max-width: 500px;
+      margin: 60px auto;
+      background: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #1e3a8a;
+      margin-bottom: 5px;
+    }
+    .progress {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 25px;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+      resize: vertical;
+    }
+    textarea {
+      min-height: 80px;
+    }
+    .availability-group label {
+      display: block;
+      margin-top: 10px;
+      font-weight: normal;
+    }
+    button {
+      margin-top: 30px;
+      width: 100%;
+      padding: 12px;
+      background: #1e3a8a;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #374fc0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Mentor Profile Setup</h2>
+    <div class="progress">Step 2 of 2</div>
+    <form id="mentorForm">
+      <label for="fullname">Full Name</label>
+      <input type="text" id="fullname" readonly />
+
+      <label for="expertise">Area(s) of Expertise</label>
+      <textarea id="expertise" placeholder="E.g. Data Science, UI/UX, Career Coaching" required></textarea>
+
+      <label for="experience">Years of Experience</label>
+      <input type="number" id="experience" min="0" max="50" placeholder="E.g. 5" required />
+    <br>
+      <label>Availability (Select all that apply):</label>
+      <div class="availability-group" id="availability">
+        <label><input type="checkbox" name="availability" value="Weekdays Mornings (8am-12pm)"> Weekdays Mornings (8am-12pm)</label>
+        <label><input type="checkbox" name="availability" value="Weekdays Afternoons (12pm-5pm)"> Weekdays Afternoons (12pm-5pm)</label>
+        <label><input type="checkbox" name="availability" value="Weekdays Evenings (5pm-9pm)"> Weekdays Evenings (5pm-9pm)</label>
+        <label><input type="checkbox" name="availability" value="Weekends Mornings (8am-12pm)"> Weekends Mornings (8am-12pm)</label>
+        <label><input type="checkbox" name="availability" value="Weekends Afternoons (12pm-5pm)"> Weekends Afternoons (12pm-5pm)</label>
+        <label><input type="checkbox" name="availability" value="Weekends Evenings (5pm-9pm)"> Weekends Evenings (5pm-9pm)</label>
+      </div>
+    <br>
+      <label for="bio">Brief Bio or Mentoring Philosophy</label>
+      <textarea id="bio" placeholder="Share what drives you to mentor, your approach, etc." required></textarea>
+
+      <button type="submit"><a href="dashboard.html" style="color: white; text-decoration: none;">Complete Registration</a></button>
+    </form>
+  </div>
+
+  <script>
+    // Prefill name
+    const storedName = localStorage.getItem('userName') || '';
+    document.getElementById('fullname').value = storedName;
+
+    document.getElementById('mentorForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+document.getElementById('registrationForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("name").value;
+    const role = document.querySelector('input[name="role"]')?.value || 
+                 document.getElementById("role")?.value || 
+                 "mentee"; // fallback
+
+    if (!name) {
+      alert("Please enter your name.");
+      return;
+    }
+
+    localStorage.setItem('userName', name);
+    localStorage.setItem('userRole', role);
+
+    window.location.href = "dashboard.html";
+  });
+
+      const expertise = document.getElementById('expertise').value.trim();
+      const experience = document.getElementById('experience').value.trim();
+      const bio = document.getElementById('bio').value.trim();
+      const availabilityChecked = document.querySelectorAll('input[name="availability"]:checked');
+
+      if (!expertise || !experience || !bio || availabilityChecked.length === 0) {
+        alert("Please fill out all fields and select availability.");
+        return;
+      }
+
+      const availability = Array.from(availabilityChecked).map(item => item.value).join(', ');
+
+      // For now, redirect to mentee dashboard
+      window.location.href = "dashboard.html";
+      window.location.href = "mentor-dashboard.html";
+    });
+  </script>
+</body>
+</html>

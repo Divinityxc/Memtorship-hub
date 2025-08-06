@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Update Mentor Profile</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f2f5fc;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #28a745;
+      color: white;
+      padding: 15px 20px;
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.08);
+    }
+    h2 {
+      margin-bottom: 20px;
+      text-align: center;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-weight: 600;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    textarea {
+      resize: vertical;
+      height: 80px;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1e7e34;
+    }
+    .profile-pic {
+      margin: 10px 0;
+      text-align: center;
+    }
+    .profile-pic img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<header>Update Mentor Profile</header>
+
+<div class="container">
+  <h2>Mentor Information</h2>
+  <form id="mentorForm">
+
+    <label for="profilePic">Profile Picture</label>
+    <input type="file" id="profilePic" accept="image/*" />
+    <div class="profile-pic">
+      <img id="preview" src="" alt="Preview" style="display:none;">
+    </div>
+
+    <label for="name">Full Name</label>
+    <input type="text" id="name" required />
+
+    <label for="email">Email</label>
+    <input type="email" id="email" required />
+
+    <label for="phone">Phone Number</label>
+    <input type="tel" id="phone" />
+
+    <label for="profession">Current Profession</label>
+    <input type="text" id="profession" placeholder="e.g. Software Engineer" />
+
+    <label for="expertise">Area of Expertise</label>
+    <select id="expertise" multiple>
+      <option>Leadership</option>
+      <option>Software Dev</option>
+      <option>Entrepreneurship</option>
+      <option>Graphic Design</option>
+      <option>Business Strategy</option>
+      <option>Marketing</option>
+    </select>
+
+    <label for="availability">Availability</label>
+    <select id="availability">
+      <option value="weekends">Weekends</option>
+      <option value="weekdays">Weekdays</option>
+      <option value="evenings">Evenings</option>
+      <option value="flexible">Flexible</option>
+    </select>
+
+    <label for="communication">Preferred Communication</label>
+    <select id="communication">
+      <option>Email</option>
+      <option>Phone</option>
+      <option>Video Call</option>
+      <option>Chat</option>
+    </select>
+
+    <label for="bio">Short Bio</label>
+    <textarea id="bio" placeholder="A bit about your background and goals as a mentor..."></textarea>
+
+    <button type="submit">Save Profile</button>
+  </form>
+</div>
+
+<script>
+  // Profile picture preview
+  const preview = document.getElementById("preview");
+  const profilePic = document.getElementById("profilePic");
+
+  profilePic.addEventListener("change", () => {
+    const file = profilePic.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        preview.src = reader.result;
+        preview.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Save data to localStorage
+  document.getElementById("mentorForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const data = {
+      name: document.getElementById("name").value,
+      email: document.getElementById("email").value,
+      phone: document.getElementById("phone").value,
+      profession: document.getElementById("profession").value,
+      availability: document.getElementById("availability").value,
+      communication: document.getElementById("communication").value,
+      expertise: Array.from(document.getElementById("expertise").selectedOptions).map(o => o.value),
+      bio: document.getElementById("bio").value
+    };
+
+    localStorage.setItem("mentorProfile", JSON.stringify(data));
+    alert("Mentor profile updated successfully!");
+  });
+
+  // Load data from localStorage
+  window.addEventListener("DOMContentLoaded", () => {
+    const saved = JSON.parse(localStorage.getItem("mentorProfile"));
+    if (saved) {
+      document.getElementById("name").value = saved.name || "";
+      document.getElementById("email").value = saved.email || "";
+      document.getElementById("phone").value = saved.phone || "";
+      document.getElementById("profession").value = saved.profession || "";
+      document.getElementById("availability").value = saved.availability || "";
+      document.getElementById("communication").value = saved.communication || "";
+      document.getElementById("bio").value = saved.bio || "";
+
+      const expertiseSelect = document.getElementById("expertise");
+      if (saved.expertise && Array.isArray(saved.expertise)) {
+        Array.from(expertiseSelect.options).forEach(option => {
+          option.selected = saved.expertise.includes(option.value);
+        });
+      }
+    }
+  });
+</script>
+
+</body>
+</html>

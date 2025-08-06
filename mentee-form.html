@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mentee Profile Setup - Youth Mentorship Hub</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+    }
+    .container {
+      max-width: 500px;
+      margin: 60px auto;
+      background: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #1e3a8a;
+      margin-bottom: 5px;
+    }
+    .progress {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 25px;
+    }
+    label {
+  display: block;
+  margin-top: 15px;
+}
+
+/* Only bolden section titles, not checkbox labels */
+label.section-label {
+  font-weight: bold;
+}
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+      resize: vertical;
+    }
+    textarea {
+      min-height: 80px;
+    }
+    button {
+      margin-top: 30px;
+      width: 100%;
+      padding: 12px;
+      background: #1e3a8a;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #374fc0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Mentee Profile Setup</h2>
+    <div class="progress">Step 2 of 2</div>
+    <form id="menteeForm">
+      <label for="fullname" class="section-label">Full Name</label>
+      <input type="text" id="fullname" readonly />
+
+      <label for="interests" class="section-label">Areas of Interest</label>
+      <textarea id="interests" placeholder="E.g. Web Development, Marketing, Graphic Design" required></textarea>
+
+      <label class="section-label">Availability (Select all that apply):</label>
+<div id="availability">
+  <label><input type="checkbox" name="availability" value="Weekdays Mornings (8am-12pm)"> Weekdays Mornings (8am-12pm)</label><br>
+  <label><input type="checkbox" name="availability" value="Weekdays Afternoons (12pm-5pm)"> Weekdays Afternoons (12pm-5pm)</label><br>
+  <label><input type="checkbox" name="availability" value="Weekdays Evenings (5pm-9pm)"> Weekdays Evenings (5pm-9pm)</label><br>
+  <label><input type="checkbox" name="availability" value="Weekends Mornings (8am-12pm)"> Weekends Mornings (8am-12pm)</label><br>
+  <label><input type="checkbox" name="availability" value="Weekends Afternoons (12pm-5pm)"> Weekends Afternoons (12pm-5pm)</label><br>
+  <label><input type="checkbox" name="availability" value="Weekends Evenings (5pm-9pm)"> Weekends Evenings (5pm-9pm)</label><br>
+</div>
+<br>
+      <label for="goals" class="section-label">Your Goals</label>
+      <textarea id="goals" placeholder="What do you hope to achieve through mentorship?" required></textarea>
+
+      <button type="submit"><a href="dashboard.html" style="color: white; text-decoration: none;">Complete Registration</a></button>
+    </form>
+  </div>
+
+  <script>
+    // Prefill name from localStorage (set during registration)
+    const storedName = localStorage.getItem('userName') || '';
+    document.getElementById('fullname').value = storedName;
+
+    document.getElementById('menteeForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+document.getElementById('registrationForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("name").value;
+    const role = document.querySelector('input[name="role"]')?.value || 
+                 document.getElementById("role")?.value || 
+                 "mentee"; // fallback
+
+    if (!name) {
+      alert("Please enter your name.");
+      return;
+    }
+
+    localStorage.setItem('userName', name);
+    localStorage.setItem('userRole', role);
+
+    window.location.href = "dashboard.html";
+  });
+
+      // Simple validation (all required fields filled)
+      const interests = document.getElementById('interests').value.trim();
+      const availabilityOptions = document.querySelectorAll('input[name="availability"]:checked');
+if (availabilityOptions.length === 0) {
+  alert('Please select at least one availability time slot.');
+  return;
+}
+const availability = Array.from(availabilityOptions).map(opt => opt.value).join(', ');
+const goals = document.getElementById('goals').value.trim();
+
+      if (!interests || !availability || !goals) {
+        alert('Please fill out all required fields.');
+        return;
+      }
+
+      // Here you’d normally save form data to a backend or localStorage
+      
+      // For now, redirect to mentee dashboard
+      window.location.href = 'dashboard.html';
+      window.location.href = 'mentee-dashboard.html';
+    });
+  </script>
+</body>
+</html>
